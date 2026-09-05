@@ -4,13 +4,13 @@ Bienvenido al repositorio principal para el curso de **Electrónica Digital II**
 
 ---
 
-
-- **Estudiantes:**
-- Laura Alejandra Moreno
-
-- Ingeniería Electrónica
-- Universidad Nacional De Colombia
----
+* **Estudiantes:**
+  * Laura Alejandra Moreno
+  * 
+  * 
+  * 
+* **Programa:** Ingeniería Electrónica
+* **Institución:** Universidad Nacional de Colombia
 
 ## 📂 Estructura del Repositorio
 
