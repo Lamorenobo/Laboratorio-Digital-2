@@ -20,6 +20,10 @@ always @(posedge clk or posedge rst) begin
     if(rst)begin
         estado <= S0;
         contador <= 0;
+        // para eliminar las xxx en la simu se inicializan los colores antes
+        verde <= 2'b00;
+        amarillo <= 2'b00;
+        rojo <= 2'b00;
     end
     else begin
         if (estado == S0)begin
