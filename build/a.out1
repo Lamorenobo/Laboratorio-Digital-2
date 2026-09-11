@@ -1,0 +1,18 @@
+**** module/scope: semaforo
+     Flip-Flops   : 12
+     Logic Gates  : 430
+     ADDER[4]: 7 units
+     EQUALITY[2]: 3 units
+     EQUALITY[32]: 4 units
+     MUX[2]: 46 slices
+     LOG[13]: 1 unaccounted
+     LOG[14]: 1 unaccounted
+**** TOTALS
+     Flip-Flops   : 12
+     Logic Gates  : 430
+     ADDER[4]: 7 units
+     EQUALITY[2]: 3 units
+     EQUALITY[32]: 4 units
+     MUX[2]: 46 slices
+     LOG[13]: 1 unaccounted
+     LOG[14]: 1 unaccounted

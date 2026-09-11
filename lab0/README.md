@@ -2,8 +2,8 @@
 
 **Grupo:** G4
 **Integrantes:**
-- Jana
-- Alina
+- Jana Rubbiano Hurtado
+- Alina Idaly Ortiz Martinez
 - Johana
 - Laura Alejandra Moreno
 

@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-`include "semaforo1.v"
+`include "lab0/semaforo1.v"
 
 module tb_semaforo;
 
