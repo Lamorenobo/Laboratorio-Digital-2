@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`include "acumulador.v"
+`include "Laboratorio-Digital-2/lab0/acumulador.v"
 
 module tb_acumulador;
 
