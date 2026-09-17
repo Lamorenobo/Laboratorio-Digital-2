@@ -35,7 +35,7 @@ module tb_semaforo;
         rst = 0;
 
         // Dejar correr la simulación
-        #200;
+        #300;
 
         // Finalizar
         $finish;
