@@ -27,9 +27,9 @@
         end
         else begin
             if (estado == S0)begin
-                verde = 2'b01;
-                amarillo = 2'b00;
-                rojo = 2'b00;
+                verde <= 2'b01;
+                amarillo <= 2'b00;
+                rojo <= 2'b00;
                 if (contador == 4) begin
                     estado <= S1;
                     contador <= contador + 1;
@@ -40,9 +40,9 @@
             end
 
             if (estado == S1)begin
-                verde = 2'b00;
-                amarillo = 2'b01;
-                rojo = 2'b00;
+                verde <= 2'b00;
+                amarillo <= 2'b01;
+                rojo <= 2'b00;
                 if (contador == 6) begin
                     estado <= S2;
                     contador <= contador + 1;
@@ -50,16 +50,19 @@
                 else begin
                         contador <= contador + 1;
                     end
-                if (contador ==  12) begin
+            if (contador ==  12) begin
                     estado <= S0;
-                    contador <= contador + 1;
+                    contador <= 0;
                 end
+                else begin
+                        contador <= contador + 1;
+                    end
             end
             
-            if (estado == S2)begin
-                verde = 2'b00;
-                amarillo = 2'b00;
-                rojo = 2'b01;
+             if (estado == S2)begin
+                verde <= 2'b00;
+                amarillo <= 2'b00;
+                rojo <= 2'b01;
                 if (contador == 10) begin
                     estado <= S1;
                     contador <= contador + 1;
