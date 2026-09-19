@@ -2,43 +2,14 @@
 ## Introducción a Verilog, Simulación y Máquinas de Estados Finitos (FSM)
 
 ---
+## Acumulador Secuencial
 
-## Integrantes
+### Diseño implementado
 
-- Nombre completo – DNI
-- Nombre completo – DNI
-- Nombre completo – DNI
-- Jana Rubiano Hurtado – 1105360903
-
-**Grupo de trabajo:**  
-**Semestre:** 2026-2  
-
----
-
-## Índice
-- [Diseño implementado](#diseño-implementado)
-- [Simulaciones](#simulaciones)
-- [Implementación](#implementación)
-- [Conclusiones](#conclusiones)
-- [Referencias](#referencias)
-
----
-
-## Diseño implementado
-
-### Semáforo
-
-- Tipo de sistema (FSM, FSM + datapath).
-- Estados definidos.
-- Funcionamiento general del sistema.
-
-Cuando aplique, incluya el diagrama de la máquina de estados.
-
-### Acumulador Secuencial
 
 El Acumulador Secuencial es una máquina de estados finita (FSM) con datapath. De este modo, el datapath es la estructura de hardware encargada de mover, almacenar y procesar la información, mientras que la FSM gestiona las señales que activan o desactivan los componentes en el datapath.
 
-### FSM para sumar 3 o 4 veces
+#### FSM para sumar 3 o 4 veces
 
 Hay 4 entradas: las señales de `clock` y `reset`, una señal de `start` y una señal `x` con espacio hasta de 4 bits.
 
@@ -52,7 +23,7 @@ La FSM se compone de 4 estados:
 
 ![FSM para sumar x 3 o 4 veces](./imagenes/sumar_x-3-4.png)
 
-### FSM para sumar hasta que acc >= 20
+#### FSM para sumar hasta que acc >= 20
 
 Para esta variante se sigue exactamente la misma lógica con la única diferencia que ya no se tiene en cuenta el contador, sino únicamente el valor de `acc`, el cual al ser mayor o igual a 20 pasa a `DONE`.
 
@@ -60,21 +31,6 @@ Para esta variante se sigue exactamente la misma lógica con la única diferenci
 ---
 
 ## Simulaciones
-
-### Semáforo
-Describa las simulaciones realizadas para verificar el funcionamiento del diseño.
-
-Incluya:
-- Descripción del testbench.
-- Señales observadas.
-- Resultados obtenidos.
-
-### Evidencias
-
-(Incluya capturas de pantalla de GTKWave donde se evidencie el correcto funcionamiento.)
-
-
-### Acumulador Secuencial
 
 Se diseñó un testbench para probar el correcto funcionamiento del acumulador secuencial.
 
@@ -106,7 +62,7 @@ acumulador uut (
 Luego se generó la señal del reloj, con ciclos de duración de 10ns y dentro del bloque de initial begin se generaron los archivos .vcd para correr en GTKWave.
 Las señales se inicializaron en 0, manteniendo rst por 15ns. Se hicieron dos pruebas, primero se estableció x = 5, por lo tanto el resultado debe ser 15 y luego x = 7 lo cual debe dar como resultado 21.
 
-**Para sumar hasta que acc <= 20**
+**Para sumar hasta que acc >= 20**
 
 Se siguió la misma estructura que para el testbench anterior, cambiando solamente las características de la prueba. En este caso se tiene una señal de entrada x con valor de 6, que necesitará 4 ciclos del reloj para llegar a un valor mayor a 20; la segunda prueba tiene a x = 5, de tal forma que se demorará de nuevo 4 ciclos en llegar a 20.
 ```verilog
@@ -117,28 +73,17 @@ Se siguió la misma estructura que para el testbench anterior, cambiando solamen
     #10 start = 0; // Pulso de inicio
 ```
 
-### Evidencias
+### Evidencias en GTKWave
 **Para sumar x 3 veces**
 
 ![FSM para sumar x hasta que acc ≥ 20](./imagenes/tb_suma_x-3-4.png)
 ---
+**Para sumar hasta que acc >= 20**
 ![FSM para sumar x hasta que acc ≥ 20](./imagenes/tb_suma_hasta_20.png)
-
-## Implementación
-
-### Semáforo
-Explique cómo se implementó el diseño en Verilog.
-
-Incluya:
-- Organización del código.
-- Manejo de reloj y reset.
-- Comportamiento esperado del sistema.
-
-> El código fuente debe encontrarse en la carpeta `src/`.
 
 ---
 
-### Acumulador
+### Explicación del Código
 **Para sumar x 3 veces**
 
 Primero, se crea un modulo llamado acumulador, donde se definenen las entradas y las salidas, como `wire` o `reg` dependiendo de si se está almacenando un valor o se está haciendo una asignación continua.
@@ -158,7 +103,7 @@ Ahora, en cada flanco positivo del reloj o del reset (`always @(posedgclk or pos
 
 `default` garantiza la seguridad del sistema retornando a IDLE en caso de que la máquina caiga en un estado no definido.
 
-**Para sumar hasta que acc <= 20**
+**Para sumar hasta que acc >= 20**
 
 Para el módulo `acumulador2`, la estructura del módulo, las entradas/salidas, los estados (`localparam`) y el bloque de control principal son exactamente iguales a la descripción anterior. Los cambios específicos se resumen a continuación:
 
@@ -172,10 +117,14 @@ Los estados `IDLE`, `DONE` y la cláusula `default` funcionan de manera idéntic
 
 ## Conclusiones
 
-- Principales aprendizajes del laboratorio.
-- Dificultades encontradas.
-- Importancia de la simulación en el diseño digital.
+- Se validó la implementación de dos máquinas de estado finito (FSM) para el diseño de sistemas secuenciales, en los cuales se evidencia la separación entre la máquina de estados (control) y el datapath (contador y acumulador).
+- Se comprobó que la máquina de estados responde de forma correcta a cirterios de parada basados en conteo y también a banderas del datapath (`acc >= 20`).
+- El desaarrollo de esta práctica permitió afianzar el uso adecuado de `reg` y `wire`, dado el caso de realizar asignaciones dentro de bloques `always` o asignaciones continuas.
+- Se comprobó la importanacia en la realización de simulaciones, en este caso usando GTKWave, para validar el correcto funcionamiento de la lógica planteada en las máquinas de estado. Tambien se evidenció la importancia de un buen planteamiento del testbench, identificando casos críticos en los que la lógica del código pueda llegar a fallar.
 
 ---
 
 ## Referencias
+[1] J. O. Velásquez, "2026-2_Lab_Electronica_Digital_2_G3yG4," GitHub repository, 2026. [En línea]. Disponible en: https://github.com/jovelasquezs/2026-2_Lab_Electronica_Digital_2_G3yG4/tree/99a44ca5e42941f942e894620f3b033788197b8e/labs/lab00. [Accedido: 19-sep-2026].
+
+[2] D. M. Harris y S. L. Harris, Digital Design and Computer Architecture, 2a ed. Waltham, MA, EE. UU.: Morgan Kaufmann, 2012.
