@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`include "acumulador2.v"
+`include "Laboratorio-Digital-2/lab0/acumulador2.v"
 module tb_acumulador2;
 
     // Entradas del DUT
