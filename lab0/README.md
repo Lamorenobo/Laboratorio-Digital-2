@@ -2,6 +2,10 @@
 ## Introducción a Verilog, Simulación y Máquinas de Estados Finitos (FSM)
 
 ---
+## Objetivos del Laboratorio
+- Diseñar e implementar Máquinas de Estados Finitos (FSM) sencillas en Verilog.
+- Validar el comportamiento de los diseños mediante testbench y visualización de señales en GTKWave.
+---
 ## FSM de control – Semáforo simple
 **Descripción:** 
 Se diseñó un semáforo vehicular controlado por una FSM de tres estados (`Verde: S0`, `Amarillo: S1`, `Rojo: S2`). 
