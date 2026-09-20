@@ -7,7 +7,7 @@ Bienvenido al repositorio principal para el curso de **Electrónica Digital II**
 * **Estudiantes:**
   * Laura Alejandra Moreno
   * Jana Rubiano Hurtado
-  * Johana Tellez Ganmez
+  * Johana Tellez Gamez
   * Alina Idaly Ortíz Martinez
 * **Programa:** Ingeniería Electrónica
 * **Institución:** Universidad Nacional de Colombia
