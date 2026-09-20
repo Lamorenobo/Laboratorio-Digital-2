@@ -7,9 +7,9 @@
 - Validar el comportamiento de los diseños mediante testbench y visualización de señales en GTKWave.
 ---
 ## FSM de control – Semáforo simple
-**Descripción:** 
+### Descripción
 Se diseñó un semáforo vehicular controlado por una FSM de tres estados (`Verde: S0`, `Amarillo: S1`, `Rojo: S2`). 
-* .
+
 
 ![Maquina de estados semáforo](Imagenes/Maquina_de_estados1.jpeg)
 
@@ -17,7 +17,7 @@ El semáforo se implementó como una máquina de estados finitos de tipo Moore c
 
 Se implementaron tres estados, S0=verde, S1=amarillo, S2=rojo, los cuales funcionaban a 5, 2 y 4 ciclos respectivamente, reiniciando el contador a 0 tras pasar por todos los ciclos y así evitar que el contador se desborde. 
 
-**Codigo elaborado:** 
+### Codigo elaborado: 
 En cuanto al codigo se definieron las entradas que en este caso serian el *rst* y el *clk*, se crearon ademas las salidas para cada color, y se definieron los parametros locales y registros necesarios para manejar los cambios entre  estados todo con el fin del correcto funcionamiento del diseño.
 
 ```verilog
@@ -51,7 +51,7 @@ always @(posedge clk or posedge rst) begin
     end
 ```
 
-A continuación se describen los tres estados, utilizando el operador no bloqueante <= para que todos los registros fueran actualizados al mismo timpo que el flanco, modelando asi correctamente el comportamiento de los flip-flops.
+A continuación se describen los tres estados, utilizando el operador no bloqueante <= para que todos los registros fueran actualizados al mismo tiempo que el flanco, modelando asi correctamente el comportamiento de los flip-flops.
 
 ```verilog
             if (estado == S1)begin
@@ -75,7 +75,7 @@ A continuación se describen los tres estados, utilizando el operador no bloquea
 
 Según la máquina de estados, cuando el contador alcanza el valor 10 en el estado S2, la máquina regresa al estado S1 para la segunda fase de amarillo, con el contador en 11. Cuando el contador llega a 12, la máquina pasa a S0 y el contador se reinicia a 0 mediante la asignación contador <= 0. Este reinicio es importante porque hace que el verde vuelva a durar 5 ciclos y que el proceso del semáforo se repita siempre con los mismos tiempos. Sin él, el contador se desbordaría de 15 a 0 y el verde duraría 8 ciclos.
 
-#### Simulaciones 
+### Simulaciones 
 
 
 ![Simulación semaforo](Imagenes/Sim1.png)
