@@ -8,7 +8,7 @@ module tb_alu;
     reg  [1:0] option;
     wire [3:0] result;
 
-    alu_4bits uut (
+    alu4bits uut (
         .A(A),
         .B(B),
         .option(option),
