@@ -39,6 +39,7 @@ module top (
     // Pulso de un ciclo cuando un botón pasa de 0 a 1
     wire [3:0] btn_pulse;
 
+    wire [3:0] alu_result;
     // Registro de estados de los botones
     always @(posedge clk) begin
         btn_reg0 <= btn;
@@ -85,7 +86,6 @@ module top (
         .result(alu_result)
     );
 
-    wire [3:0] alu_result;
 
     assign led[0] = alu_result[0];
     assign led[1] = alu_result[1];
