@@ -166,11 +166,14 @@ Explique cómo se implementó el diseño en Verilog.
   - **Banderas RGB:** coinciden con la reducción OR de cada operación lógica en todos los casos (por ejemplo, en el caso 2, `6 & 1 = 0000` apaga el rojo; en el caso 5, `5 ^ 5 = 0000` apaga el azul).
 
 #### Evidencias de Simulación
-![Resultados simulacion GTKwave](png/gtkwave.png)
-En la imagen se puede observar el comportamiento antes descrito, donde tenemos nuestras entradas y como a traves de las compuertas obtenemos las diferentes salidas
-![Resultados simulacion en consola](png/resultadostb2.png)
-La imagen representa los mismos resultados pero observados desde la consola
 
+![Resultados simulación GTKWave](png/gtkwave.png)
+
+*Imagen 1. resultados en GTKWave.* En la imagen se puede observar el comportamiento antes descrito: las entradas y cómo, a través de las compuertas, se obtienen las diferentes salidas.
+
+![Resultados simulación en consola](png/resultadostb2.png)
+
+*Imagen 2 .* La imagen muestra los mismos resultados, pero observados desde la consola.
 ---
 
 ### Implementación (2)
@@ -233,15 +236,13 @@ La imagen representa los mismos resultados pero observados desde la consola
 
 ---
 
-## Evidencias de Funcionamiento en Hardware (Foto / Video)
+## Evidencias de Funcionamiento en Hardware ( Video)
 
-A continuación se adjuntan los videos de funcionamiento( pese a que se realizo la entrega de forma presencial en el laboratorio):
--[Ver video del funcionamiento de la suma](https://drive.google.com/file/d/1H1N-MXbYyIjGjGA1lciIclX3rV1Wu95e/view?usp=sharing)
+A continuación se adjuntan los videos de funcionamiento (aunque la entrega se realizó de forma presencial en el laboratorio):
 
--[Ver video de funcionamiento del RGB](https://drive.google.com/file/d/1Q7yf1PN9kMpQKWcLIAUYt7h-8q3HEDRx/view?usp=sharing)
--[Ver video de funcionamiento de la inversion y resta](https://drive.google.com/file/d/1VaPqxmVjErRAhz-5wIozd5-9JJ9rNlZc/view?usp=sharing)
-
-
+- [Ver video del funcionamiento de la suma](https://drive.google.com/file/d/1H1N-MXbYyIjGjGA1lciIclX3rV1Wu95e/view?usp=sharing)
+- [Ver video del funcionamiento del RGB](https://drive.google.com/file/d/1Q7yf1PN9kMpQKWcLIAUYt7h-8q3HEDRx/view?usp=sharing)
+- [Ver video del funcionamiento de la inversión y resta](https://drive.google.com/file/d/1VaPqxmVjErRAhz-5wIozd5-9JJ9rNlZc/view?usp=sharing)
 
 ## Conclusiones
 
