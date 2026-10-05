@@ -1,4 +1,4 @@
-# Laboratorio 00: TÍTULO DEL LABORATORIO
+# Laboratorio 01
 
 ---
 
@@ -18,6 +18,7 @@
 - [Introducción](#introducción)
 - [Parte 1](#parte-1)
   - [Diseño implementado](#diseño-implementado-1)
+  - [Simulaciones](#simulaciones-1)
   - [Implementación y Código Verilog](#implementación-y-código-verilog-1)
 - [Parte 2](#parte-2)
   - [Diseño implementado](#diseño-implementado-2)
@@ -85,6 +86,72 @@ module Semaforo(
 endmodule
 ```
 ---
+
+### Simulaciones (1)
+
+#### Justificación del ajuste de tiempos
+Para poder simular el comportamiento del sistema en software, fue necesario reducir el límite del contador en el código ya que intentar procesar más de 300 millones de ciclos en una simulación genera archivos de forma de onda (`.vcd`) masivos (de varios Gigabytes) y exige un uso excesivo de procesamiento y memoria RAM, lo cual congela el entorno de simulación. Por esta razón, se escalaron los valores del contador a un ciclo total de **400 pulsos de reloj**, permitiendo verificar la lógica de transición entre estados en cuestión de microsegundos de simulación, sin alterar la estructura funcional del diseño.
+
+---
+
+#### Código HDL (`simulacion.v`)
+
+```verilog
+`timescale 1ns / 1ps
+
+module Semaforo(
+    input clk,            // Entrada de reloj del sistema
+    output reg [2:0] led  // Salida de 3 bits para controlar los LEDs (Rojo, Amarillo, Verde)
+);
+
+    integer counter = 0;  // Contador de ciclos de reloj
+
+    // Bloque 1: Incremento y reinicio del contador
+    always @(posedge clk) begin
+        if (counter >= 400)
+            counter <= 0;    // Reinicia el ciclo al llegar al límite
+        else
+            counter <= counter + 1; // Incrementa en cada flanco de subida
+    end
+
+    // Bloque 2: Decodificación de estados del semáforo
+    always @(posedge clk) begin
+        if (counter == 0)
+            led <= 3'b001;   // Estado 1: Enciende luz Roja (Bit 0)
+        else if (counter == 100)
+            led <= 3 me011;   // Estado 2: Enciende luz Amarilla (Bits 0 y 1)
+        else if (counter == 200)
+            led <= 3'b010;   // Estado 3: Enciende luz Verde (Bit 1)
+        else if (counter == 300)
+            led <= 3'b011;   // Estado 4: Enciende luz Amarilla de transición (Bits 0 y 1)
+    end
+
+endmodule
+```
+El resultado de la simulación se ve a continuación, donde se puede observar que el sistema **completa un ciclo entero de cuatro fases dentro de una ventana de tiempo de $4\,\mu\text{s}$**, manteniendo un comportamiento periódico y estable sin saturar los recursos de cómputo.
+
+#### Análisis detallado de las señales:
+
+1. **Estado 1 - Luz Roja (`0 ns` a `1000 ns` / `0` a `1 us`):**
+   * La señal `led[2:0]` toma el valor **`001`**.
+   * `led[0]` en ALTO ($1$), mientras que `led[1]` y `led[2]` permanecen en BAJO ($0$).
+
+2. **Estado 2 - Transición Amarilla (`1000 ns` a `2000 ns` / `1 us` a `2 us`):**
+   * La señal `led[2:0]` cambia al valor **`011`**.
+   * `led[0]` y `led[1]` se mantienen en ALTO ($1$).
+
+3. **Estado 3 - Luz Verde (`2000 ns` a `3000 ns` / `2 us` a `3 us`):**
+   * La señal `led[2:0]` pasa al valor **`010`**.
+   * `led[1]` conmuta a ALTO ($1$), mientras que `led[0]` pasa a BAJO ($0$).
+
+4. **Estado 4 - Transición Amarilla (`3000 ns` a `4000 ns` / `3 us` a `4 us`):**
+   * La señal `led[2:0]` regresa al valor **`011`**.
+   * Tanto `led[0]` como `led[1]` vuelven a estar en ALTO ($1$).
+
+5. **Reinicio de Ciclo (`4000 ns` / `4 us` en adelante):**
+   * Al alcanzar los $4\,\mu\text{s}$ (equivalentes a 400 ciclos de reloj), el contador interno se reinicia a `0` y la salida `led[2:0]` vuelve a **`001`**, iniciando un nuevo ciclo exactamente igual al anterior.
+  
+![Semaforo](Images/semaforo.PNG)
 
 ### Implementación y Código Verilog (1)
 #### Código XDC
