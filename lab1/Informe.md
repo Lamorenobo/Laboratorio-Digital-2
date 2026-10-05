@@ -167,7 +167,9 @@ Explique cómo se implementó el diseño en Verilog.
 
 #### Evidencias de Simulación
 ![Resultados simulacion GTKwave](png/gtkwave.png)
+En la imagen se puede observar el comportamiento antes descrito, donde tenemos nuestras entradas y como a traves de las compuertas obtenemos las diferentes salidas
 ![Resultados simulacion en consola](png/resultadostb2.png)
+La imagen representa los mismos resultados pero observados desde la consola
 
 ---
 
@@ -233,10 +235,11 @@ Explique cómo se implementó el diseño en Verilog.
 
 ## Evidencias de Funcionamiento en Hardware (Foto / Video)
 
-A continuacion se adjuntan los videos de funcionamiento( pese a que se realizo la entrega de forma presencial en el laboratorio);
-[Ver video del funcionamiento de la suma](png/video1.mp4)
-[Ver video de funcionamiento del RGB](img/video2.mp4)
-[Ver video de funcionamiento de la inversion y resta](img/video3.mp4)
+A continuación se adjuntan los videos de funcionamiento( pese a que se realizo la entrega de forma presencial en el laboratorio):
+-[Ver video del funcionamiento de la suma](https://drive.google.com/file/d/1H1N-MXbYyIjGjGA1lciIclX3rV1Wu95e/view?usp=sharing)
+
+-[Ver video de funcionamiento del RGB](https://drive.google.com/file/d/1Q7yf1PN9kMpQKWcLIAUYt7h-8q3HEDRx/view?usp=sharing)
+-[Ver video de funcionamiento de la inversion y resta](https://drive.google.com/file/d/1VaPqxmVjErRAhz-5wIozd5-9JJ9rNlZc/view?usp=sharing)
 
 
 
