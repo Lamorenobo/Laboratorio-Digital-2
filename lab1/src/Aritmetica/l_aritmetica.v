@@ -2,9 +2,7 @@
 module l_aritmetica (
     input  wire [3:0] sw,
     input  wire [5:0] btn,
-    // LED SUMA O RESTA
     output wire [3:0] led,
-    // LED RGB
     output wire       y,
     output wire       o,
     output wire       xo
@@ -12,6 +10,8 @@ module l_aritmetica (
 
     wire [3:0] A     = sw;
     wire [3:0] B_raw = btn[3:0];
+
+
     wire [3:0] B = B_raw ^ {4{btn[5]}}; //invertir bits
 
     // operaciones lógicas
