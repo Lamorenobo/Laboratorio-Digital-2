@@ -1,4 +1,4 @@
-# Laboratorio 00: TÍTULO DEL LABORATORIO
+# Laboratorio 02:
 
 ---
 
@@ -84,11 +84,11 @@ Explique cómo se implementó el diseño en Verilog.
 
 ---
 
-## Parte 2
+## Parte 2: Ejercicio 2 Test Funcional Personalizado
 
 ### Diseño implementado (2)
 
-- **Tipo de sistema:** Combinacional puro. No tiene reloj, reset ni registros: las salidas dependen únicamente del valor actual de las entradas.
+- **Tipo de sistema:** Combinacional puro. Ya que en este caso no tenemos reloj y  las salidas dependen únicamente del valor actual de las entradas.
 
 - **Funcionamiento general:** El circuito forma dos operandos de 4 bits, `A` y `B`, y realiza en paralelo cuatro operaciones sobre ellos:
   1. `AND_result = A & B`
@@ -96,7 +96,7 @@ Explique cómo se implementó el diseño en Verilog.
   3. `XOR_result = A ^ B`
   4. `SUM_result = A + B` o `A - B`, según el botón `BTN4`.
 
-  El resultado aritmético se muestra en binario en los 4 LEDs verdes de la Placa Zybo . Los resultados de las operaciones lógicas se resumen en el LED RGB mediante un operador OR (`|`), que enciende el canal correspondiente si el resultado contiene al menos un bit en `1`.
+  El resultado aritmético se muestra en binario en los 4 LEDs verdes de la Placa Zybo Z7.En el LED RGB  se resumen las operaciones 1,2 y 3  mediante un operador OR (`|`), que enciende el color del RGB  correspondiente si el resultado contiene al menos un bit en `1`.
 
 
 - **Construcción de los operandos:**
@@ -137,20 +137,7 @@ Explique cómo se implementó el diseño en Verilog.
   | `led[0]` / `led[1]` / `led[2]` / `led[3]` | M14 / M15 / G14 / D18 | LD0..LD3 |
   | `y` (rojo) / `o` (verde) / `xo` (azul) | V16 / F17 / M17 | LED RGB `led6_r` / `led6_g` / `led6_b` |
 
-- **Diagrama de bloques:**
 
-  ```
-   sw[3:0] ──────────────────────────► A ──────┬──► A & B ──► |  ──► y  (R)
-                                                │
-   btn[3:0] ──► B_raw ──► XOR ─► B ─────────────┼──► A | B ──► |  ──► o  (G)
-                           ▲                    │
-   btn[5] ─────────────────┘ (invierte B)       ├──► A ^ B ──► |  ──► xo (B)
-                                                │
-   btn[4] ──► selector ───────────────────────► MUX ◄── A + B
-              (0: suma, 1: resta)                    ◄── A - B ──► led[3:0]
-  ```
-
----
 
 ### Simulaciones (2)
 
@@ -179,7 +166,8 @@ Explique cómo se implementó el diseño en Verilog.
   - **Banderas RGB:** coinciden con la reducción OR de cada operación lógica en todos los casos (por ejemplo, en el caso 2, `6 & 1 = 0000` apaga el rojo; en el caso 5, `5 ^ 5 = 0000` apaga el azul).
 
 #### Evidencias de Simulación
-*(Incluya capturas de pantalla de GTKWave).*
+![Resultados simulacion GTKwave](png/gtkwave.png)
+![Resultados simulacion en consola](png/resultadostb2.png)
 
 ---
 
@@ -245,13 +233,12 @@ Explique cómo se implementó el diseño en Verilog.
 
 ## Evidencias de Funcionamiento en Hardware (Foto / Video)
 
-Muestre fotos o enlaces a vídeos donde se demuestre el circuito funcionando sobre la tarjeta física:
+A continuacion se adjuntan los videos de funcionamiento( pese a que se realizo la entrega de forma presencial en el laboratorio);
+[Ver video del funcionamiento de la suma](png/video1.mp4)
+[Ver video de funcionamiento del RGB](img/video2.mp4)
+[Ver video de funcionamiento de la inversion y resta](img/video3.mp4)
 
-- [ ] **Funcionamiento correcto** de las operaciones planteadas.
-- [ ] **Uso de todas las entradas** (demostración con switches y botones).
-- [ ] **Uso de todas las salidas** (comprobación del encendido de los LEDs).
 
----
 
 ## Conclusiones
 
