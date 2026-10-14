@@ -110,18 +110,17 @@ El módulo no contiene reloj ni registros: usa únicamente una asignación conti
 
  
 ## Operaciones e Interfaz
-
 ### Tabla de Operaciones Implementadas
- 
+
 A continuación se detallan las operaciones soportadas según el código de operación (*OpCode*) de 2 bits:
- 
+
 | Código de Operación (`option`) | Operación | Expresión en Verilog | Explicación |
-| :---: | :---: | :---: | :--- |
-| `00` | Suma | `A + B` | $R = A + B \pmod{16}$ |
-| `01` | Resta | `A - B` | $R = A - B \pmod{16}$ |
-| `10` | AND | `A & B` | $R = A \ \& \ B$ |
-| `11` | OR | `A \| B` | $R = A \ \vert \ B$ |
- 
+| :---: | :---: | :---: | :---: |
+| `00` | Suma | `A + B` | $R = A + B$ (truncado a 4 bits) |
+| `01` | Resta | `A - B` | $R = A - B$ (complemento a 2 en 4 bits) |
+| `10` | AND   | `A & B` | $R = A \ \& \ B$ (operación bit a bit) |
+| `11` | OR    | `A \| B` | $R = A \mid B$ (operación bit a bit) |
+
 ### Asignación de Hardware
  
 | Recurso | Señal en `top` | Función |
@@ -182,17 +181,16 @@ Dado que el LED RGB se decodifica directamente desde `option_reg`, el color most
 
 ### Explicación del Comportamiento Observado
 
-### Explicación del Comportamiento Observado
 
 * **Comportamiento combinacional de la ALU (`alu4bits`):**  
   La simulación confirma la naturaleza puramente combinacional del módulo: la salida `result` se actualiza de manera instantánea ante cambios en las entradas o en el selector `option`, sin depender de una señal de reloj.  
   Con los operandos iniciales $A = 0101_2$ (5) y $B = 0011_2$ (3), se validaron con éxito las cuatro operaciones: suma (`1000` = 8), resta (`0010` = 2), AND (`0001`) y OR (`0111`). Al evaluar el segundo caso con $A = 1100_2$ (12) y $B = 0101_2$ (5), se evidenció el correcto truncamiento de 4 bits ante desbordamiento en la suma ($12 + 5 = 17 \rightarrow \text{`0001`}$), así como la exactitud en la resta (`0111` = 7), AND (`0100`) y OR (`1101`).
 
 * **Captura de operandos en el módulo superior (*Top-Level*):**  
-  Se validó el almacenamiento secuencial de datos en los registros internos mediante el accionamiento de los pulsadores. Se observa una carga ordenada: primero se capturó el operando $A$ con el valor `0011` (3) y posteriormente el operando $B$ con `0101` (5). Dado que la operación por defecto es la suma (`option = 00`), el circuito mantuvo la salida reflejando el valor de $A$ hasta que se ingresó $B$, momento en el cual el resultado convergió de inmediato a `1000` (8).
+  Se validó el almacenamiento secuencial de datos en los registros internos mediante el accionamiento de los pulsadores. Se observa una carga ordenada: primero se guardo el operando $A$ con el valor `0011` (3) y posteriormente el operando $B$ con `0101` (5). Dado que la operación por defecto es la suma (`option = 00`), el circuito mantuvo la salida reflejando el valor de $A$ hasta que se ingresó $B$, momento en el cual el resultado cambio de inmediato a `1000` (8).
 
-* **Operaciones en complemento a dos y retención de registros:**  
-  Al conmutar las señales de control en el sistema integrado, se comprobó el soporte de aritmética con signo: la resta $3 - 5 = -2$ se codificó fielmente en complemento a dos como la palabra binaria `1110`. Finalmente, las transiciones hacia las funciones lógicas AND (`10` $\rightarrow$ `0001`) y OR (`11` $\rightarrow$ `0111`) confirmaron que los registros internos retienen intactos los operandos $A$ y $B$, demostrando la correcta independencia entre la lógica secuencial de almacenamiento y la etapa de cálculo combinacional.
+* **Aritmética en complemento a dos y estabilidad de registros en la FPGA:**  
+  Durante la prueba de la resta ($3 - 5 = -2$), el circuito generó la palabra binaria `1110`, verificando el cálculo correcto en complemento a dos para resultados negativos. Asimismo, durante las conmutaciones a las operaciones AND (`10`) y OR (`11`), los operandos $A$ y $B$ permanecieron inalterados en sus respectivos registros, confirmando la estabilidad del almacenamiento frente a cambios en el selector.
 
 
   
@@ -207,13 +205,19 @@ En la demostración se puede observar cómo se ingresan los operandos a través 
 
 ## Conclusiones
 
-- Principales aprendizajes del diseño digital con captura/almacenamiento de datos.
-- Dificultades técnicas encontradas durante la simulación o la síntesis.
-- Aportes del análisis de ondas en GTKWave para la detección de errores.
+- La separación del diseño en dos módulos, la ALU y el módulo de control, permitió organizar mejor el funcionamiento del sistema. La ALU se encargó de realizar las operaciones de suma, resta, AND y OR, mientras que el módulo de control se encargó de guardar los operandos y seleccionar la operación. Esto permitió que los resultados se actualizaran de acuerdo con los datos almacenados y la operación seleccionada.
 
+- El uso de los cuatro interruptores para ingresar los operandos de 4 bits permitió trabajar dentro de las limitaciones de la tarjeta FPGA. Mediante los pulsadores, se ingresaron y almacenaron los valores de A y B por separado, de modo que cambiar la posición de los interruptores no modificara los datos que ya se habían guardado. Así, fue posible realizar operaciones con dos operandos utilizando los mismos recursos físicos de entrada.
+
+- La detección de cada pulsación permitió evitar que una sola presión del botón generara varios cambios en el sistema. Esto fue importante tanto para almacenar los operandos como para cambiar la operación seleccionada. De esta manera, cada pulsación produjo una acción controlada, lo que mejoró la estabilidad del funcionamiento y evitó cambios no deseados en los valores guardados o en la operación elegida.
+
+- La simulación en GTKWave permitió comprobar el funcionamiento del diseño antes de implementarlo en la tarjeta FPGA. Al observar señales como los pulsos de los botones, los valores almacenados en los registros, el resultado de la ALU y las salidas de los LED RGB, fue posible verificar que los datos se guardaran correctamente y que la operación seleccionada se reflejara en las salidas correspondientes. Esto facilitó la identificación de errores en la integración de los módulos antes de realizar las pruebas en la tarjeta física.
+  
 ---
-
 ## Referencias
 
-- Documentación oficial del lenguaje Verilog HDL.
-- Especificaciones de la tarjeta FPGA empleada en el laboratorio.
+1. **Digilent Inc.**, *"Zybo Z7 Reference Manual"*, Digilent Reference Documentation, 2022. [En línea]. Disponible en: [https://digilent.com/reference/programmable-logic/zybo-z7/reference-manual](https://digilent.com/reference/programmable-logic/zybo-z7/reference-manual)
+   *(Consultado para la asignación de pines físicos de switches, pulsadores, LEDs de usuario y configuración del LED RGB tricolor en la FPGA Zynq-7000).*
+
+2. **J. O. Velásquez S.**, *"Laboratorio 02: Diseño, simulación e implementación de una ALU de 4 bits"*, Repositorio del curso Electrónica Digital 2, 2026. [En línea]. Disponible en: [https://github.com/jovelasquezs/2026-2_Lab_Electronica_Digital_2_G3yG4/tree/main/labs/lab02](https://github.com/jovelasquezs/2026-2_Lab_Electronica_Digital_2_G3yG4/tree/main/labs/lab02)
+   *(Guía oficial de laboratorio para los requerimientos funcionales, interfaz de usuario y arquitectura del sistema).*
