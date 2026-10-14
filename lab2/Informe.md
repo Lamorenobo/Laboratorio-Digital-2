@@ -58,8 +58,7 @@ El diseño se fundamenta en una arquitectura que divide el sistema en una ruta d
 
 ###  Diagrama de bloques
 
-
-![Figura1](path/to/lab02_alu4bits_datapath.png)
+![Figura1](lab02_alu4bits_datapath.png)
 
 **Figura 1.** Diagrama de bloques del datapath y la unidad de control. Los switches comparten un bus que se captura en reg_A y reg_B mediante pulsos de un ciclo; la ALU es puramente combinacional.
 
