@@ -54,10 +54,58 @@ La interacción del usuario con el sistema se realiza de forma directa a través
 
 ## Arquitectura Propuesta
 
-Presente una descripción detallada de la arquitectura física/lógica elegida para resolver el problema (por ejemplo, datapath + unidad de control, registros de entrada, multiplexores, etc.).
+El diseño se fundamenta en una arquitectura que divide el sistema en una ruta de datos (*datapath*) y una unidad de control. Esta separación garantiza que la ejecución de las operaciones aritmético-lógicas (lógica combinacional) sea completamente independiente de la captura y almacenamiento de datos del usuario (lógica secuencial).
 
-*(Si aplica, incluya aquí un diagrama de bloques o esquema del sistema).*
+###  Diagrama de bloques
 
+
+![Figura1](path/to/lab02_alu4bits_datapath.png)
+
+**Figura 1.** Diagrama de bloques del datapath y la unidad de control. Los switches comparten un bus que se captura en reg_A y reg_B mediante pulsos de un ciclo; la ALU es puramente combinacional.
+
+### Datapath y registros de entrada
+
+La ruta de datos relaciona  la información desde los periféricos físicos hasta las salidas visuales:
+
+- **Bus de datos multiplexado:** los cuatro interruptores físicos de la FPGA (`sw[3:0]`) funcionan como un bus de entrada compartido en el tiempo.
+- 
+- **Registros de operandos:** se implementaron dos registros de 4 bits (`reg_A` y `reg_B`) utilizando memoria secuencial usando flip-flops sincronizados con la señal `clk`. Estos registros actúan como memorias de entrada que capturan el valor del bus temporalmente, reteniendo los operandos estables frente a la ALU de forma continua, sin importar si los interruptores cambian de posición posteriormente.
+
+###  Unidad de control y generación de señales
+
+Se encarga de manejar el flujo de captura de datos y seleccionar el estado de la operación a través de los botones (btn[3:0]):
+
+- **Acondicionamiento de señal (detector de flanco):** la señal de los botones se hace pasar por un par de registros de desplazamiento (`btn_reg0` y `btn_reg1`) y se calcula `btn_pulse = btn_reg0 & ~btn_reg1`. Esto extrae un pulso limpio de un solo ciclo de reloj en el flanco de subida, de modo que una pulsación sostenida produce una única acción. Dicho pulso se usa como habilitador para la escritura segura en los registros.
+- **Registro de instrucción (opcode):** un registro de control de 2 bits (`option_reg`) almacena la operación elegida. En lugar de requerir que el usuario mantenga el botón presionado, la unidad de control invierte cada bit individualmente mediante los pulsos de `BTN2` (bit 0) y `BTN3` (bit 1), actuando como una memoria de estado.
+
+| Botón | Acción |
+|-------|--------|
+| BTN0 | `reg_A <= sw` |
+| BTN1 | `reg_B <= sw` |
+| BTN2 | `option_reg[0] <= ~option_reg[0]` |
+| BTN3 | `option_reg[1] <= ~option_reg[1]` |
+
+### Multiplexor combinacional (ALU)
+
+El sistema combinacional, implementado en el módulo independiente `alu4bits.v`, se diseñó estructuralmente como un multiplexor lógico. Dado que carece de reloj o memoria interna, procesa simultáneamente las sumas, restas y operaciones lógicas de los operandos ingresados. La señal proveniente de la unidad de control (`option_reg`) funciona como el canal selector del multiplexor interno, enrutando el resultado de la operación deseada directamente hacia los LEDs de salida (`led[3:0]`).
+
+| `option` | Operación |
+|----------|-----------|
+| `00` | Suma |
+| `01` | Resta |
+| `10` | AND |
+| `11` | OR |
+
+### Decodificador visual (LED RGB)
+
+Un bloque de lógica combinacional secundario analiza el valor del registro de instrucción y lo decodifica para activar las compuertas lógicas asociadas a los pines `red`, `green` y `blue` del LED RGB. Su diseño permite la activación simultánea de canales (por ejemplo, encendiendo rojo y verde a la vez cuando el código es `11`) para ampliar la paleta de colores del indicador de estado.
+
+| `option` | Operación | `red` | `green` | `blue` | Color |
+|----------|-----------|:-----:|:-------:|:------:|-------|
+| `00` | Suma | 0 | 1 | 0 | Verde |
+| `01` | Resta | 1 | 0 | 0 | Rojo |
+| `10` | AND | 0 | 0 | 1 | Azul |
+| `11` | OR | 1 | 1 | 0 | Amarillo |
 ---
 
 ## Módulos Desarrollados
