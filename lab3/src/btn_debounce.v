@@ -1,5 +1,5 @@
 module btn_debounce #(
-    parameter COUNTER_MAX = 20'd100 // Límite reducido para simulación (en síntesis Vivado usará 1_000_000)
+    parameter COUNTER_MAX = 20'd1_000_000 // Límite reducido para simulación (en síntesis Vivado usará 1_000_000) en simulación 100
 )(
     input  wire clk,
     input  wire rst,
@@ -27,7 +27,7 @@ module btn_debounce #(
             btn_pulse <= 0;
             if (btn_sync_1 != btn_state) begin
                 counter <= counter + 1'b1;
-                if (counter == 20'd100) begin // para implementacion cambiar por 20'd1_000_000
+                if (counter == 20'd1_000_000) begin // para implementacion cambiar por 20'd1_000_000
                     btn_state <= btn_sync_1;
                     counter   <= 0;
                     if (btn_sync_1 == 1'b1) begin
