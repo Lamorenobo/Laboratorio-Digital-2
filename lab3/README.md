@@ -119,4 +119,4 @@ Muestra qué registro está seleccionado actualmente para escritura:
 - R2: Rojo.
 - R3: Blanco/Cian.
 
-![Simulación en GTKWave del funcionamiento del módulo top completo.](imagenes/top_png)
+![Simulación en GTKWave del funcionamiento del módulo top completo.](imagenes/top.png)
