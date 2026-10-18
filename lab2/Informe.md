@@ -105,8 +105,80 @@ module alu4bits (
  
 endmodule
 ```
- 
+
+
 El módulo no contiene reloj ni registros: usa únicamente una asignación continua (`assign`), por lo que el resultado depende solo de los valores actuales de `A`, `B` y `option`. La suma y la resta se realizan sobre 4 bits, es decir, módulo 16. Por ejemplo, $12 + 5 = 17$ se muestra como $1$ y $3 - 5$ como $14$ (`1110`). La rama final (`4'b0000`) cubre los casos no definidos y, con un `option` de 2 bits, nunca se alcanza.
+
+
+### `top.v`
+A continuación se presenta la implementación completa del módulo superior, el cual integra la sincronización, la lógica secuencial y la interconexión con la ALU:
+```verilog
+`timescale 1ns / 1ps
+module top (
+    input  wire       clk,
+    input  wire [3:0] sw,
+    input  wire [3:0] btn,
+    output wire [3:0] led,
+    output reg        red,
+    output reg        green,
+    output reg        blue
+);
+    // Registros para sincronización y detección de flanco
+    reg [3:0] btn_reg0 = 4'b0000;
+    reg [3:0] btn_reg1 = 4'b0000;
+    wire [3:0] btn_pulse;
+    // Registros de operandos y código de operación
+    reg [3:0] reg_A = 4'b0000;
+    reg [3:0] reg_B = 4'b0000;
+    reg [1:0] option_reg = 2'b00;
+    // Cable para el resultado de la ALU
+    wire [3:0] alu_result;
+    // Detección de flanco de subida (pulso monotiro de 1 ciclo)
+    assign btn_pulse = btn_reg0 & ~btn_reg1;
+    // Lógica secuencial: sincronización, captura de operandos y toggle de operación
+    always @(posedge clk) begin
+        // Sincronizador de dos etapas contra metaestabilidad
+        btn_reg0 <= btn;
+        btn_reg1 <= btn_reg0;
+        // Captura con habilitador síncrono (Clock Enable)
+        if (btn_pulse[0]) begin
+            reg_A <= sw;
+        end
+        if (btn_pulse[1]) begin
+            reg_B <= sw;
+        end
+        // Inversión individual de bits de opcode
+        if (btn_pulse[2]) begin
+            option_reg[0] <= ~option_reg[0];
+        end
+        if (btn_pulse[3]) begin
+            option_reg[1] <= ~option_reg[1];
+        end
+    end
+    // Instanciación del módulo puramente combinacional ALU
+    alu4bits u_alu (
+        .A(reg_A),
+        .B(reg_B),
+        .option(option_reg),
+        .result(alu_result)
+    );
+    // Salida de datos conectada a los LEDs de usuario
+    assign led = alu_result;
+    // Decodificador combinacional para el LED RGB según option_reg
+    always @(*) begin
+        case (option_reg)
+            2'b00: begin red = 1'b0; green = 1'b1; blue = 1'b0; end // Suma: Verde
+            2'b01: begin red = 1'b1; green = 1'b0; blue = 1'b0; end // Resta: Rojo
+            2'b10: begin red = 1'b0; green = 1'b0; blue = 1'b1; end // AND: Azul
+            2'b11: begin red = 1'b1; green = 1'b1; blue = 1'b0; end // OR: Amarillo
+            default: begin red = 1'b0; green = 1'b0; blue = 1'b0; end
+        endcase
+    end
+endmodule
+```
+
+#### Consideraciones de diseño síncrono en `top.v`:
+- **Asignaciones no bloqueantes (`<=`):** Todo el proceso secuencial sensible a `posedge clk` utiliza exclusivamente asignaciones no bloqueantes para manejar transferencias de registros en paralelo libres de condiciones de carrera.
 
  
 ## Operaciones e Interfaz
@@ -118,7 +190,7 @@ A continuación se detallan las operaciones soportadas según el código de oper
 | :---: | :---: | :---: | :---: |
 | `00` | Suma | `A + B` | $R = A + B$ (truncado a 4 bits) |
 | `01` | Resta | `A - B` | $R = A - B$ (complemento a 2 en 4 bits) |
-| `10` | AND   | `A & B` | $R = A \ \& \ B$ (operación bit a bit) |
+| `10` | AND   | `A & B` | $R = A  `&` B$ (operación bit a bit) |
 | `11` | OR    | `A \| B` | $R = A \mid B$ (operación bit a bit) |
 
 ### Asignación de Hardware
@@ -181,7 +253,9 @@ Dado que el LED RGB se decodifica directamente desde `option_reg`, el color most
 
 ### Explicación del Comportamiento Observado
 
-
+* **Metodología de verificación en HDL:**  
+  Los bancos de prueba (`tb_alu.v` y `tb_top.v`) se estructuraron con señales de prueba con retardos temporales (`#`) sincronizados con un generador de reloj periódico para el testbench. Más allá de la  visualización en GTKWave, los testbenches emplearon condicionales de control y mensajes por consola (`$display` / `$time`) para comprobar que la respuesta del modelo combinacional y los registros síncronos satisficieran en los casos límite como lo eran el desbordamiento y complemento a dos.
+  
 * **Comportamiento combinacional de la ALU (`alu4bits`):**  
   La simulación confirma la naturaleza puramente combinacional del módulo: la salida `result` se actualiza de manera instantánea ante cambios en las entradas o en el selector `option`, sin depender de una señal de reloj.  
   Con los operandos iniciales $A = 0101_2$ (5) y $B = 0011_2$ (3), se validaron con éxito las cuatro operaciones: suma (`1000` = 8), resta (`0010` = 2), AND (`0001`) y OR (`0111`). Al evaluar el segundo caso con $A = 1100_2$ (12) y $B = 0101_2$ (5), se evidenció el correcto truncamiento de 4 bits ante desbordamiento en la suma ($12 + 5 = 17 \rightarrow \text{`0001`}$), así como la exactitud en la resta (`0111` = 7), AND (`0100`) y OR (`1101`).
