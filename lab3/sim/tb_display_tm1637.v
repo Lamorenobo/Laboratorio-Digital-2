@@ -1,53 +1,93 @@
-`timescale 1ns / 1ps
+`timescale 1ns/1ps
+`include "src\tm1637_driver.v"
+module tb_tm1637_driver;
 
-module tb_display_tm1637;
 
-    reg        clk;
-    reg        rst;
-    reg  [3:0] data_in;
-    reg        mode_sel;
+    reg  clk = 0;
+    reg  rst = 1;
+    wire tm_clk;
+    wire dio;
+    wire ack_err;
 
-    wire       clk_tm1637;
-    wire       dio;
 
-    // Instanciación del módulo
-    display_tm1637 uut (
-        .clk(clk),
-        .rst(rst),
-        .data_in(data_in),
-        .mode_sel(mode_sel),
-        .clk_tm1637(clk_tm1637),
-        .dio(dio)
-    );
-
-    // Reloj principal de 100 MHz (10 ns)
     always #5 clk = ~clk;
 
+
+    pullup(dio);
+
+    tm1637_driver #(
+        .CLK_HZ (1_000_000),
+        .TICK_HZ(250_000)
+    ) dut (
+        .clk    (clk),
+        .rst    (rst),
+        .seg0   (8'h06),   // '1'
+        .seg1   (8'h5B),   // '2'
+        .seg2   (8'h4F),   // '3'
+        .seg3   (8'h66),   // '4'
+        .brillo (3'd5),
+        .tm_clk (tm_clk),
+        .tm_dio (dio),
+        .ack_err(ack_err)
+    );
+
+
+    reg       ack_low = 0;     
+    reg [7:0] byte_rx = 0;     
+    integer   bit_cnt = 0;     
+    integer   n_stop  = 0;     
+
+    assign dio = ack_low ? 1'b0 : 1'bz;
+
+    // START: DIO baja mientras CLK está en 1
+    always @(negedge dio) if (tm_clk === 1'b1) begin
+        $display("%t  START", $time);
+        bit_cnt = 0;
+    end
+
+    // STOP: DIO sube mientras CLK está en 1
+    always @(posedge dio) if (tm_clk === 1'b1) begin
+        $display("%t  STOP", $time);
+        bit_cnt = 0;
+        n_stop  = n_stop + 1;
+    end
+
+
+    always @(posedge tm_clk) if (bit_cnt < 8) begin
+        byte_rx[bit_cnt] = dio;
+        bit_cnt = bit_cnt + 1;
+    end
+
+    always @(negedge tm_clk) begin
+        if (ack_low) begin
+            ack_low = 0;
+            bit_cnt = 0;
+        end else if (bit_cnt == 8) begin
+            $display("%t     byte recibido: 0x%h", $time, byte_rx);
+            ack_low = 1;
+        end
+    end
+
+    // ---------------- Secuencia de la prueba ----------------
     initial begin
-        $dumpfile("display_tm1637.vcd");
-        $dumpvars(0, tb_display_tm1637);
+        $timeformat(-9, 0, " ns", 9);
+        $dumpfile("tb_tm1637_driver.vcd");
+        $dumpvars(0, tb_tm1637_driver);
 
-        clk = 0;
-        rst = 1;
-        data_in = 4'b0000;
-        mode_sel = 0; // Iniciar en modo Decimal
+        #50 rst = 0;                 
 
-        #20;
-        rst = 0;
-        #20;
+        wait (n_stop == 3);      
+        #100;
 
-        // Probar Decimal con 13 (4'b1101) -> Esperado: Decena 1, Unidad 3
-        data_in = 4'b1101; 
-        #50000;
+        if (ack_err) $display("FALLO: el driver no vio el ACK");
+        else         $display("OK: refresco completo y todos los ACK correctos");
+        $finish;
+    end
 
-        // Cambiar a Modo Binario con 13 (4'b1101) -> Esperado: 1 1 0 1 en los 4 dígitos
-        mode_sel = 1; 
-        #50000;
-
-        // Probar Modo Binario con 6 (4'b0110) -> Esperado: 0 1 1 0
-        data_in = 4'b0110;
-        #50000;
-
+    // Seguridad: si algo se cuelga, terminar igual
+    initial begin
+        #200_000;
+        $display("TIMEOUT: no se completaron los 3 STOP");
         $finish;
     end
 
