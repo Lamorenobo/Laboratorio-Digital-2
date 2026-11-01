@@ -35,7 +35,6 @@
    - 3.2 [Pruebas y Evidencias de Funcionamiento Físico](#32-pruebas-y-evidencias-de-funcionamiento-físico)
 4. [Análisis de Resultados](#4-análisis-de-resultados)
 5. [Conclusiones](#5-conclusiones)
-## 5. Conclusiones
 ---
 
 ## 1. Descripción del Sistema
