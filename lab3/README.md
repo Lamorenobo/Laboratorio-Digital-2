@@ -519,7 +519,7 @@ En la simulación se aprecia el avance secuencial del registro de estado `idx` (
 Cada vez que el estado `idx` selecciona un estado de envío de byte (`OP_BYTE`), la señal de reloj serie `tm_clk` entra en operación y el contador de bits `bit_cnt` incrementa ordenadamente de `0` a `8`:
 * Durante los conteos del `0` al `7`, el módulo extrae uno a uno los bits del registro `op_byte` (comenzando por el LSB) y los conmuta sobre la línea bi-direccional `dio`.
 * En el conteo `8` (noveno pulso), la FPGA conmuta la línea `dio` a alta impedancia para recibir la respuesta de confirmación (ACK) del receptor, validando que el flujo serie se mantiene sincronizado y libre de errores.
-![Simulación en GTKWave del funcionamiento del selector de combinaciones.](imagenes/display.png)
+![Simulación en GTKWave del funcionamiento del selector de combinaciones.](imagenes/display.PNG)
 
 ## 2. Explicación de la Arquitectura Modular (`top.v`)
 ### 2.1 Especificación
