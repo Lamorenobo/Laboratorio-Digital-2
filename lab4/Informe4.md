@@ -2,10 +2,13 @@
 
 **Curso:** Electrónica Digital 2  
 **Grupo:** G3/G4  
-**Estudiante:** [Tu Nombre / jovelasquezs]  
-**Fecha:** [Fecha de entrega]  
 
 ---
+**Integrantes:**
+* Laura Alejandra Moreno
+* Jana Rubiano Hurtado
+* Johana Tellez Gamez
+* Alina Idaly Ortíz Martinez
 
 ## 1. Objetivos de la Práctica
 Durante esta sesión de laboratorio, los objetivos cumplidos fueron:
@@ -21,29 +24,29 @@ Durante esta sesión de laboratorio, los objetivos cumplidos fueron:
 ### 2.1 Integración y Creación del Proyecto
 Se creó el proyecto en Vivado seleccionando la tarjeta Zybo Z7-10 en lugar de seleccionar directamente la FPGA.
 
-> ![Selección de la Zybo Z7](ruta/a/tu/imagen_zybo_z7.png)
+> ![Selección de la Zybo Z7](Img/elegir.png)
 
 ### 2.2 Creación del SoC en Vivado (Hardware)
 
 A través de la herramienta *IP INTEGRATOR > Create Block Design*, se añadieron y configuraron los bloques necesarios (ZYNQ7 Processing System, Processor System Reset, AXI Interconnect, AXI BRAM Controller y Block Memory Generator). 
-> ![bloques necesarios](ruta/a/tu/bloques.jpeg)
+> ![bloques necesarios](Img/bloques.jpeg)
 
 Además, se añadieron los puertos GPIO correspondientes a los 4 botones y 4 LEDs de la tarjeta.
 
 
-> ![bloques necesarios](ruta/a/tu/bloquesunidos.jpeg)
+> ![bloques necesarios](Img/bloquesunidos.jpeg)
 
 Tras realizar las conexiones (clk, rst, AXI) y ejecutar *Regenerate Layout*, el diagrama de bloques resultante es el siguiente:
 
-> ![Diagrama de Bloques Finalizado](ruta/a/tu/bloquesfinal.jpeg)
+> ![Diagrama de Bloques Finalizado](Img/address.jpeg)
 
 Posteriormente, en la pestaña *Address Editor*, se asignó y ajustó el rango de memoria a 4K para `/axi_gpio_0/S_AXI`.
 
-> ![Configuración en Address Editor](ruta/a/tu/conexionfinal.jpeg)
+> ![Configuración en Address Editor](Img/conexionfinal.jpeg)
 
 Se generó el *HDL Wrapper* permitiendo que Vivado lo administre y auto-actualice, y se ejecutó la automatización del diseño (*Run Block Automation*). Finalmente, se generó el *Bitstream* de manera exitosa y se exportó la plataforma de hardware (archivo `.xsa`).
 
-> ![ejecucion del "Run Block Automations"](ruta/a/tu/running.jpeg)
+> ![ejecucion del "Run Block Automations"](Img/running.jpeg)
 
 ---
 
@@ -51,12 +54,11 @@ Se generó el *HDL Wrapper* permitiendo que Vivado lo administre y auto-actualic
 
 Con el hardware exportado, se inició Vitis IDE. Se creó un nuevo *Platform Component* utilizando el archivo `.xsa` previamente generado.
 
-> ![Creación de Plataforma en Vitis](ruta/a/tu/platforma.jpeg)
+> ![Creación de Plataforma en Vitis](Img/platforma.jpeg)
 
 A continuación, se creó una nueva *Application* basada en esta plataforma. Se añadió el archivo `main.c` (provisto en la carpeta `src`) a la carpeta de recursos de la aplicación. El proyecto se compiló sin errores (*Build*), preparándolo para ser ejecutado en la placa.
 
-> **[INSTRUCCIÓN: Inserta aquí la captura de la consola mostrando que el Build fue exitoso]**
-> ![Build exitoso en Vitis](ruta/a/tu/build.png)
+> ![Build exitoso en Vitis](Img/build.png)
 
 ---
 
