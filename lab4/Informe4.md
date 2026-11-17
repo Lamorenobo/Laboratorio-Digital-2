@@ -1,7 +1,7 @@
 # Informe Lab04 – SoC Zynq-7000
 
 **Curso:** Electrónica Digital 2  
-**Grupo:** G3/G4  
+**Grupo:** G4  
 
 ---
 **Integrantes:**
