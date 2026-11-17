@@ -24,7 +24,7 @@ Durante esta sesión de laboratorio, los objetivos cumplidos fueron:
 ### 2.1 Integración y Creación del Proyecto
 Se creó el proyecto en Vivado seleccionando la tarjeta Zybo Z7-10 en lugar de seleccionar directamente la FPGA.
 
-> ![Selección de la Zybo Z7](Img/elegir.png)
+> ![Selección de la Zybo Z7](Img/elegir.jpeg)
 
 ### 2.2 Creación del SoC en Vivado (Hardware)
 
@@ -54,11 +54,11 @@ Se generó el *HDL Wrapper* permitiendo que Vivado lo administre y auto-actualic
 
 Con el hardware exportado, se inició Vitis IDE. Se creó un nuevo *Platform Component* utilizando el archivo `.xsa` previamente generado.
 
-> ![Creación de Plataforma en Vitis](Img/platforma.jpeg)
+> ![Creación de Plataforma en Vitis](Img/plataforma.jpeg)
 
 A continuación, se creó una nueva *Application* basada en esta plataforma. Se añadió el archivo `main.c` (provisto en la carpeta `src`) a la carpeta de recursos de la aplicación. El proyecto se compiló sin errores (*Build*), preparándolo para ser ejecutado en la placa.
 
-> ![Build exitoso en Vitis](Img/build.png)
+> ![Build exitoso en Vitis](Img/build.jpeg)
 
 ---
 
